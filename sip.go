@@ -313,4 +313,6 @@ const FIELD_PROTO = 43
 const FIELD_FMT = 44
 const FIELD_CAT = 45
 
+const FIELD_RECEIVED = 46
+
 const FIELD_IGNORE = 255

@@ -28,6 +28,7 @@ type sipContact struct {
 	Tran    []byte // Transport
 	Qval    []byte // Q Value
 	Expires []byte // Expires
+	Received []byte // Received
 	Src     []byte // Full source if needed
 }
 
@@ -45,6 +46,7 @@ func parseSipContact(v []byte, out *sipContact) {
 	out.Tran = nil
 	out.Qval = nil
 	out.Expires = nil
+	out.Received = nil
 	out.Src = nil
 
 	// Keep the source line if needed
@@ -93,6 +95,12 @@ func parseSipContact(v []byte, out *sipContact) {
 				if getString(v, pos, pos+8) == "expires=" {
 					state = FIELD_EXPIRES
 					pos = pos + 8
+					continue
+				}
+				// Look for a Received identifier
+				if getString(v, pos, pos+9) == "received=" {
+					state = FIELD_RECEIVED
+					pos = pos + 9
 					continue
 				}
 				// Look for a transport identifier
@@ -182,6 +190,14 @@ func parseSipContact(v []byte, out *sipContact) {
 				continue
 			}
 			out.Expires = append(out.Expires, v[pos])
+
+		case FIELD_RECEIVED:
+			if v[pos] == ';' || v[pos] == '>' || v[pos] == ' ' {
+				state = FIELD_BASE
+				pos++
+				continue
+			}
+			out.received = append(out.Received, v[pos])
 
 		case FIELD_IGNORE:
 			if v[pos] == ';' || v[pos] == '>' {
