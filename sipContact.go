@@ -197,7 +197,7 @@ func parseSipContact(v []byte, out *sipContact) {
 				pos++
 				continue
 			}
-			out.received = append(out.Received, v[pos])
+			out.Received = append(out.Received, v[pos])
 
 		case FIELD_IGNORE:
 			if v[pos] == ';' || v[pos] == '>' {
